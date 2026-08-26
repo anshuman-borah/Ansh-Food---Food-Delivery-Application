@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,17 +30,17 @@ public class AppConfig {
                 management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(authorize -> authorize
-                // 1. Explicitly allow all Preflight OPTIONS requests (Crucial for CORS!)
+                // 1. Allow all preflight OPTIONS calls
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // 2. Allow public endpoints
-                .requestMatchers("/auth/**").permitAll()
-                // 3. Admin & User routes
+                // 2. Allow all Auth endpoints & Error forwardings
+                .requestMatchers("/auth/**", "/error").permitAll()
+                // 3. Admin & User protected routes
                 .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
             .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-            .csrf(csrf -> csrf.disable())
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
@@ -49,17 +50,18 @@ public class AppConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
 
-        // Allows credentials (cookies, auth headers) to work with wildcard domain patterns
+        // Pattern matching for all domains (Localhost + Vercel + custom domains)
         cfg.setAllowedOriginPatterns(Arrays.asList(
-            "https://*.vercel.app",
-            "https://ansh-food-frontend.vercel.app",
             "http://localhost:3000",
             "http://localhost:5173",
-            "http://localhost:4200"
+            "http://localhost:4200",
+            "https://*.vercel.app",
+            "https://ansh-food-frontend.vercel.app",
+            "*"
         ));
 
-        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        cfg.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Accept", "X-Requested-With", "Origin"));
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
+        cfg.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         cfg.setExposedHeaders(Arrays.asList("Authorization"));
         cfg.setAllowCredentials(true);
         cfg.setMaxAge(3600L);
