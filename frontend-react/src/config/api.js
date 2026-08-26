@@ -1,10 +1,9 @@
-import axios from 'axios';
-
-export const API_URL = "https://ansh-food-backend.onrender.com";
+import axios from "axios";
+export const API_URL = "https://your-deployed-backend-url.com";
 
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
