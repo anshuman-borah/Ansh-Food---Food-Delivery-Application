@@ -7,53 +7,47 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Service
-public class PaymentServiceImplementation implements PaymentService{
-	
-	
-	@Value("${stripe.api.key}")
-	 private String stripeSecretKey;
+public class PaymentServiceImplementation implements PaymentService {
 
-	@Override
-	public PaymentResponse generatePaymentLink(Order order) throws StripeException {
+    @Value("${stripe.api.key}")
+    private String stripeSecretKey;
 
-	  Stripe.apiKey = stripeSecretKey;
+    // Defaults to localhost:3000 if FRONTEND_URL is not set in environment
+    @Value("${frontend.url:http://localhost:3000}")
+    private String frontendUrl;
 
-	        SessionCreateParams params = SessionCreateParams.builder()
-	                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-	                .setMode(SessionCreateParams.Mode.PAYMENT)
-	                .setSuccessUrl("https://zosh-food.vercel.app/payment/success/"+order.getId())
-	                .setCancelUrl("https://zosh-food.vercel.app/cancel")
-	                .addLineItem(SessionCreateParams.LineItem.builder()
-	                        .setQuantity(1L)
-	                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-	                                .setCurrency("usd")
-	                                .setUnitAmount((long) order.getTotalAmount()*100) // Specify the order amount in cents
-	                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-	                                        .setName("pizza burger")
-	                                        .build())
-	                                .build())
-	                        .build())
-	                .build();
-	        
-	        Session session = Session.create(params);
-	        
-	        System.out.println("session _____ " + session);
-	        
-	        PaymentResponse res = new PaymentResponse();
-	        res.setPayment_url(session.getUrl());
-	        
-	        return res;
-	    
-	}
+    @Override
+    public PaymentResponse generatePaymentLink(Order order) throws StripeException {
 
+        Stripe.apiKey = stripeSecretKey;
+
+        SessionCreateParams params = SessionCreateParams.builder()
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl(frontendUrl + "/payment/success/" + order.getId())
+                .setCancelUrl(frontendUrl + "/cancel")
+                .addLineItem(SessionCreateParams.LineItem.builder()
+                        .setQuantity(1L)
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("usd")
+                                .setUnitAmount((long) (order.getTotalAmount() * 100)) // Amount in cents
+                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                        .setName("Ansh Foods - Order #" + order.getId())
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+
+        Session session = Session.create(params);
+
+        System.out.println("Stripe Checkout Session URL: " + session.getUrl());
+
+        PaymentResponse res = new PaymentResponse();
+        res.setPayment_url(session.getUrl());
+
+        return res;
+    }
 }
