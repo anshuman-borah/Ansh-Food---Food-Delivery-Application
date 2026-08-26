@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,46 +25,41 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtTokenValidator extends OncePerRequestFilter {
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        // Skip JWT validation completely on auth, error, and OPTIONS preflight requests
+        return path.startsWith("/auth") || path.equals("/error") || "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
-        // 1. Instantly bypass validation for Preflight OPTIONS requests to prevent CORS block
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
 
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-        
-        // 2. Only process the token if it matches standard Bearer scheme format
-        if (jwt != null && jwt.startsWith("Bearer ")) {
-            jwt = jwt.substring(7);
-            
+
+        if (jwt != null) {
+            if (jwt.startsWith("Bearer ")) {
+                jwt = jwt.substring(7);
+            }
+
             try {
                 SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
-                
                 Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-                
+
                 String email = String.valueOf(claims.get("email"));
                 String authorities = String.valueOf(claims.get("authorities"));
-                
-                System.out.println("authorities -------- " + authorities);
-                
+
                 List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
-                
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                
+
             } catch (Exception e) {
-                // 3. Clear security context and write clean 401 response without dropping CORS headers
                 SecurityContextHolder.clearContext();
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("{\"error\": \"Invalid or expired token.\"}");
-                return;
+                throw new BadCredentialsException("Invalid or expired JWT token...");
             }
         }
-        
+
         filterChain.doFilter(request, response);
     }
 }
