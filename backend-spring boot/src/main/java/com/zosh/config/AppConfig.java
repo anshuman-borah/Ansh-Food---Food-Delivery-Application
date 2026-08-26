@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,8 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +28,12 @@ public class AppConfig {
             .sessionManagement(management ->
                 management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .authorizeHttpRequests(Authorize -> Authorize
+            .authorizeHttpRequests(authorize -> authorize
+                // 1. Explicitly allow all Preflight OPTIONS requests (Crucial for CORS!)
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // 2. Allow public endpoints
+                .requestMatchers("/auth/**").permitAll()
+                // 3. Admin & User routes
                 .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER", "ADMIN")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
@@ -40,33 +45,28 @@ public class AppConfig {
         return http.build();
     }
 
-    private CorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
 
-        return new CorsConfigurationSource() {
+        // Allows credentials (cookies, auth headers) to work with wildcard domain patterns
+        cfg.setAllowedOriginPatterns(Arrays.asList(
+            "https://*.vercel.app",
+            "https://ansh-food-frontend.vercel.app",
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://localhost:4200"
+        ));
 
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        cfg.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Accept", "X-Requested-With", "Origin"));
+        cfg.setExposedHeaders(Arrays.asList("Authorization"));
+        cfg.setAllowCredentials(true);
+        cfg.setMaxAge(3600L);
 
-                CorsConfiguration cfg = new CorsConfiguration();
-
-                // Using setAllowedOriginPatterns allows credentials to work with specific domains & wildcard subdomains
-                cfg.setAllowedOriginPatterns(Arrays.asList(
-                    "https://*.vercel.app",
-                    "https://ansh-food-frontend.vercel.app",
-                    "http://localhost:3000",
-                    "http://localhost:5173",
-                    "http://localhost:4200"
-                ));
-
-                cfg.setAllowedMethods(Collections.singletonList("*"));
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
-                cfg.setAllowCredentials(true);
-                cfg.setExposedHeaders(Arrays.asList("Authorization"));
-                cfg.setMaxAge(3600L);
-
-                return cfg;
-            }
-        };
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cfg);
+        return source;
     }
 
     @Bean
