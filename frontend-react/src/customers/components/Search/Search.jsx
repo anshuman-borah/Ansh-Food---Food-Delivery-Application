@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { topMeels } from "../../../Data/topMeels";
+import { topMeals } from "../../../Data/topMeals";
 import { PopularCuisines } from "./PopularCuisines";
 import SearchDishCard from "./SearchDishCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,7 @@ const Search = () => {
       <div>
         <h1 className="py-5 text-2xl font-semibold">Popular Cuisines</h1>
         <div className="flex flex-wrap ">
-          {topMeels.slice(0, 9).map((item) => (
+          {topMeals.slice(0, 9).map((item) => (
             <PopularCuisines image={item.image} title={item.title} />
           ))}
         </div>

@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import CarouselItem from "./CarouselItem";
-import { topMeels } from "../../../Data/topMeels";
+import { topMeals } from "../../../Data/topMeals";
 const responsive= [
   {
     breakpoint: 1024,
@@ -51,7 +51,7 @@ export default class MultipleItemsCarousel extends Component {
       <div>
         
         <Slider {...settings}>
-            {topMeels.map((item)=><CarouselItem image={item.image} title={item.title}/>)}
+            {topMeals.map((item)=><CarouselItem image={item.image} title={item.title}/>)}
         </Slider>
       </div>
     );

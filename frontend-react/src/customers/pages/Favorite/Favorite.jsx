@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import RestaurantCard from '../../components/RestarentCard/RestaurantCard'
-import { restaurants } from '../../../Data/restaurents'
+import { restaurants } from '../../../Data/restaurants'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Favorite = () => {

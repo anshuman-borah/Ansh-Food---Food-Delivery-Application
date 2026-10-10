@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "./HomePage.css";
 import Navbar from "../../components/Navbar/Navbar";
 import MultipleItemsCarousel from "../../components/MultiItemCarousel/MultiItemCarousel";
-import { restaurents } from "../../../Data/restaurents";
+import { restaurants } from "../../../Data/restaurants";
 import RestaurantCard from "../../components/RestarentCard/RestaurantCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurantsAction } from "../../../State/Customers/Restaurant/restaurant.action";
@@ -35,7 +35,7 @@ const HomePage = () => {
       <section className="p-10 lg:py-10 lg:px-20">
         <div className="">
           <p className="text-2xl font-semibold text-gray-400 py-3 pb-10">
-            Top Meels
+            Top Meals
           </p>
           <MultipleItemsCarousel />
         </div>
