@@ -42,8 +42,8 @@ public class PaymentServiceImplementation implements PaymentService{
 	        SessionCreateParams params = SessionCreateParams.builder()
 	                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
 	                .setMode(SessionCreateParams.Mode.PAYMENT)
-	                .setSuccessUrl("http://localhost:3000/payment/success/"+order.getId())
-	                .setCancelUrl("https://ansh-food-frontend.vercel.app/")
+	                .setSuccessUrl("https://ansh-food-frontend.vercel.app/payment/success/"+order.getId())
+	                .setCancelUrl("https://ansh-food-frontend.vercel.app")
 	                .addLineItem(SessionCreateParams.LineItem.builder()
 	                        .setQuantity(1L)
 	                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
@@ -96,7 +96,7 @@ public class PaymentServiceImplementation implements PaymentService{
 			paymentLinkRequest.put("reminder_enable",true);
 
 			// Set the callback URL and method
-			paymentLinkRequest.put("callback_url","http://localhost:3000/payment/success/"+order
+			paymentLinkRequest.put("callback_url","https://ansh-food-frontend.vercel.app/payment/success/"+order
 					.getId());
 			paymentLinkRequest.put("callback_method","get");
 
