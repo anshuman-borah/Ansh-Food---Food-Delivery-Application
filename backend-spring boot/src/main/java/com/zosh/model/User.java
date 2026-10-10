@@ -2,6 +2,8 @@ package com.zosh.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zosh.domain.USER_ROLE;
@@ -31,6 +33,7 @@ public class User {
 	private String email;
 	private String password;
 
+    @Enumerated(EnumType.STRING)
 	private USER_ROLE role;
 
 	@JsonIgnore

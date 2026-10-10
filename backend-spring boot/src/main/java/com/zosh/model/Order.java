@@ -21,6 +21,8 @@ import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 @Entity
 @AllArgsConstructor
@@ -41,6 +43,7 @@ public class Order {
 
 	private Long totalAmount;
 	
+	@Enumerated(EnumType.STRING)
 	private String orderStatus;
 
 	@Temporal(TemporalType.TIMESTAMP)
