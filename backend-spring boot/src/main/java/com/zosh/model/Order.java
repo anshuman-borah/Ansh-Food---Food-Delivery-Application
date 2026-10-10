@@ -43,7 +43,6 @@ public class Order {
 
 	private Long totalAmount;
 	
-	@Enumerated(EnumType.STRING)
 	private String orderStatus;
 
 	@Temporal(TemporalType.TIMESTAMP)
