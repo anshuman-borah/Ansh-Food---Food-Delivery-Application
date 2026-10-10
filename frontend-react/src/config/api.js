@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = "https://ansh-food-frontend.vercel.app";
+export const API_URL = "https://ansh-food-backend.onrender.com";
 
 
 export const api = axios.create({
