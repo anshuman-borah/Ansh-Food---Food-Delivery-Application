@@ -43,7 +43,7 @@ public class PaymentServiceImplementation implements PaymentService{
 	                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
 	                .setMode(SessionCreateParams.Mode.PAYMENT)
 	                .setSuccessUrl("http://localhost:3000/payment/success/"+order.getId())
-	                .setCancelUrl("https://zosh-food.vercel.app/cancel")
+	                .setCancelUrl("https://ansh-food-frontend.vercel.app/")
 	                .addLineItem(SessionCreateParams.LineItem.builder()
 	                        .setQuantity(1L)
 	                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()

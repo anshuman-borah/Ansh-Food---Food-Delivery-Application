@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "49f4914b-ab91-4409-b80e-d4c39a648bb8",
-		"name": "Zosh Food",
+		"name": "Ansh Food",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25460319"
 	},
@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "\r\n{\r\n    \"name\": \" Food\",\r\n    \"description\": \"Description of the restaurant\",\r\n    \"cuisineType\": \"Italian\",\r\n    \"address\": {\r\n        \"streetAddress\": \"321 Main Street\",\r\n        \"city\": \"Ahemdabad\",\r\n        \"stateProvince\": \"Gujrat\",\r\n        \"postalCode\": \"12345\",\r\n        \"country\": \"india\"\r\n    },\r\n    \"contactInformation\": {\r\n        \"email\": \"codewithzosh@gmail.com\",\r\n        \"mobile\": \"123-456-7890\",\r\n        \"twitter\": \"@restaurant_twitter\",\r\n        \"instagram\": \"@restaurant_instagram\"\r\n    },\r\n    \"openingHours\": \"Mon-Sun: 9:00 AM - 9:00 PM\",\r\n    \"imageUrl\": \"https://cdn.pixabay.com/photo/2014/12/15/14/05/salad-569156_640.jpg\"\r\n}",
+							"raw": "\r\n{\r\n    \"name\": \" Food\",\r\n    \"description\": \"Description of the restaurant\",\r\n    \"cuisineType\": \"Italian\",\r\n    \"address\": {\r\n        \"streetAddress\": \"321 Main Street\",\r\n        \"city\": \"Ahemdabad\",\r\n        \"stateProvince\": \"Gujrat\",\r\n        \"postalCode\": \"12345\",\r\n        \"country\": \"india\"\r\n    },\r\n    \"contactInformation\": {\r\n        \"email\": \"codewithansh@gmail.com\",\r\n        \"mobile\": \"123-456-7890\",\r\n        \"twitter\": \"@restaurant_twitter\",\r\n        \"instagram\": \"@restaurant_instagram\"\r\n    },\r\n    \"openingHours\": \"Mon-Sun: 9:00 AM - 9:00 PM\",\r\n    \"imageUrl\": \"https://cdn.pixabay.com/photo/2014/12/15/14/05/salad-569156_640.jpg\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
