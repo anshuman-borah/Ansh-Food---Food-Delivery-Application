@@ -4,6 +4,8 @@ A full-stack **multi-vendor food ordering platform** where restaurant owners can
 
 The application provides separate functionality for **customers** and **restaurant owners**, with authentication, password recovery, restaurant and food management, ordering, and Stripe payment integration.
 
+⏳ Note: the backend runs on Render's free tier and sleeps when idle. The first request after inactivity can take ~30–60 seconds while the container wakes up.
+
 ## 🚀 Features
 
 ### 👤 Customer
